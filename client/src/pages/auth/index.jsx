@@ -4,15 +4,38 @@ import Victory from "../../assets/victory.svg";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {apiClient} from '@/lib/api-client'
+import { SIGNUP_ROUTE } from "@/utils/constants";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const validateSignup = () => {
+    if(!email.length){
+      toast.error("Email is required.")
+      return false;
+    }
+    if(!password.length){
+      toast.error("Password is required.")
+      return false
+    }
+    if(password !== confirmPassword){
+      toast.error("Passwords should be same!")
+      return false
+    }
+    return true;
+  }
   const handleLogin = async () => {};
 
-  const handleSignUp = async () => {};
+  const handleSignUp = async () => {
+    if(validateSignup()){
+      const response = await apiClient.post(SIGNUP_ROUTE,{email,password})
+      console.log(response)
+    }
+  };
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center">
