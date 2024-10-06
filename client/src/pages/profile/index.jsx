@@ -1,7 +1,9 @@
 import { useAppStore } from "@/store"
+import { useState } from "react";
 
 const Profile = () => {
   const {userInfo} = useAppStore();
+  const [firstName,setFirstName] = useState("")
   return (
     <div>
       Profile
