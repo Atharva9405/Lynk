@@ -13,11 +13,17 @@ const PrivateRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/auth" />;
 };
 
+// const AuthRoute = ({ children }) => {
+//   const { userInfo } = useAppStore();
+//   const isAuthenticated = !!userInfo;
+//   return isAuthenticated ? <Navigate to="/auth" /> : children;
+// };
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? <Navigate to="/auth" /> : children;
+  return isAuthenticated ? <Navigate to="/chat" /> : children;
 };
+
 
 function App() {
   const { userInfo, setUserInfo } = useAppStore();
