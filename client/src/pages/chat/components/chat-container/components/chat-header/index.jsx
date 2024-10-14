@@ -25,8 +25,8 @@ const ChatHeader = () => {
                   )}`}
                 >
                   {selectedChatData.firstName
-                    ? selectedChatData.firstName.split("").shift()
-                    : selectedChatData.email.split("").shift()}
+                    ? selectedChatData.firstName?.split("").shift()
+                    : selectedChatData.email?.split("").shift()}
                 </div>
               )}
             </Avatar>
