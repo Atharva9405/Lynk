@@ -14,7 +14,7 @@ const MessageBar = () => {
     selectedChatData,
     userInfo,
     setIsUploading,
-    setFileUploadProgress
+    setFileUploadProgress,
   } = useAppStore();
   const emojiRef = useRef();
   const fileInputRef = useRef();
@@ -48,6 +48,14 @@ const MessageBar = () => {
         messageType: "text",
         fileUrl: undefined,
       });
+    } else if (selectedChatType === "channel") {
+      socket.emit("send-channel-message", {
+        sender: userInfo.id,
+        content: message,
+        messageType: "text",
+        fileUrl: undefined,
+        channelId: selectedChatData._id,
+      });
     }
     setMessage("");
   };
@@ -64,15 +72,15 @@ const MessageBar = () => {
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        setIsUploading(true)
+        setIsUploading(true);
         const response = await apiClient.post(UPLOAD_FILE_ROUTE, formData, {
           withCredentials: true,
-          onUploadProgress: data => {
+          onUploadProgress: (data) => {
             setFileUploadProgress(Math.round((100 * data.loaded) / data.total));
-          }
+          },
         });
         if (response.status === 200 && response.data) {
-          setIsUploading(false)
+          setIsUploading(false);
           if (selectedChatType === "contact") {
             socket.emit("sendMessage", {
               sender: userInfo.id,
@@ -81,16 +89,23 @@ const MessageBar = () => {
               messageType: "file",
               fileUrl: response.data.filePath,
             });
+          } else if (selectedChatType === "channel") {
+            socket.emit("send-channel-message", {
+              sender: userInfo.id,
+              content: undefined,
+              messageType: "file",
+              fileUrl: response.data.filePath,
+              channelId: selectedChatData._id,
+            });
           }
         }
       }
       console.log({ file });
     } catch (error) {
-      setIsUploading(false)
+      setIsUploading(false);
       console.log({ error });
     }
   };
-  
 
   return (
     <div className="h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6">
