@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { apiClient } from "@/lib/api-client";
 import {
+  CREATE_CHANNEL_ROUTE,
   GET_ALL_CONTACTS_ROUTES,
 } from "@/utils/constants";
 import { useAppStore } from "@/store";
@@ -23,9 +24,9 @@ import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const CreateChannel = () => {
-  const { setSelectedChatType, setSelectedChatData } = useAppStore();
-  const [openNewChannelModal, setOpenNewChannelModal] = useState(false);
-  const [searchedContacts, setSearchedContacts] = useState([]);
+  const { setSelectedChatType, setSelectedChatData, addChannel } =
+    useAppStore();
+  const [newChannelModal, setNewChannelModal] = useState(false);
   const [allContacts, setAllContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [channelName, setChannelName] = useState("");
@@ -40,7 +41,28 @@ const CreateChannel = () => {
     getData();
   }, []);
 
-  const createChannel = async () => {};
+  const createChannel = async () => {
+    try {
+      if (channelName.length > 0 && selectedContacts.length > 0) {
+        const response = await apiClient.post(
+          CREATE_CHANNEL_ROUTE,
+          {
+            name: channelName,
+            members: selectedContacts.map((contact) => contact.value),
+          },
+          { withCredentials: true }
+        );
+        if (response.status === 201) {
+          setChannelName("");
+          setSelectedContacts([]);
+          setNewChannelModal(false);
+          addChannel(response.data.channel)
+        }
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   return (
     <>
@@ -48,7 +70,7 @@ const CreateChannel = () => {
         <Tooltip>
           <TooltipTrigger>
             <FaPlus
-              onClick={() => setOpenNewChannelModal(true)}
+              onClick={() => setNewChannelModal(true)}
               className="text-neutral-400 font-light text-opacity-90 text-start hover:text-neutral-100 cursor-pointer transition-all duration-300"
             />
           </TooltipTrigger>
@@ -57,7 +79,7 @@ const CreateChannel = () => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <Dialog open={openNewChannelModal} onOpenChange={setOpenNewChannelModal}>
+      <Dialog open={newChannelModal} onOpenChange={setNewChannelModal}>
         <DialogContent className="bg-[#121920] border-none text-white w-[400px] h-[400px] flex flex-col">
           <DialogHeader>
             <DialogTitle>
