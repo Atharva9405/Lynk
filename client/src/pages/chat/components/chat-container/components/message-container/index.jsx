@@ -1,6 +1,9 @@
 import { apiClient } from "@/lib/api-client";
 import { useAppStore } from "@/store";
-import { GET_ALL_MESSAGES_ROUTE } from "@/utils/constants";
+import {
+  GET_ALL_MESSAGES_ROUTE,
+  GET_CHANNEL_MESSAGES,
+} from "@/utils/constants";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { HOST } from "@/utils/constants";
@@ -40,9 +43,24 @@ const MessageContainer = () => {
         console.log({ error });
       }
     };
+    const getChannelMessages = async () => {
+      try {
+        const response = await apiClient.get(
+          `${GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
+          { withCredentials: true }
+        );
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
+        }
+      } catch (error) {
+        console.log({ error });
+      }
+    };
     if (selectedChatData._id) {
       if (selectedChatType === "contact") {
         getMessages();
+      } else if (selectedChatType === "channel") {
+        getChannelMessages();
       }
     }
   }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
@@ -236,22 +254,20 @@ const MessageContainer = () => {
                   message.sender.color
                 )}`}
               >
-                { message.sender.firstName ? message.sender.firstName?.split("").shift() : message.sender.email?.split("").shift()}
+                {message.sender.firstName
+                  ? message.sender.firstName?.split("").shift()
+                  : message.sender.email?.split("").shift()}
               </AvatarFallback>
             </Avatar>
             <span className="text-sm text-white/60">{`${message.sender.firstName} ${message.sender.lastName}`}</span>
             <span className="text-sm text-white/60">
-              {
-                moment(message.timestamp).format("LT")
-              }
+              {moment(message.timestamp).format("LT")}
             </span>
           </div>
         ) : (
           <div className="text-sm text-white/60 mt-1">
-              {
-                moment(message.timestamp).format("LT")
-              }
-            </div>
+            {moment(message.timestamp).format("LT")}
+          </div>
         )}
       </div>
     );
