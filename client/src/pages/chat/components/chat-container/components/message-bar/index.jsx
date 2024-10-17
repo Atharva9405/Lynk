@@ -35,12 +35,11 @@ const MessageBar = () => {
   }, [emojiRef]);
 
   const handleAddEmoji = (emoji) => {
-    console.log("Selected Emoji:", emoji.emoji);
     setMessage((msg) => msg + emoji.emoji);
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return; // Prevent sending empty messages
+    if (!message.trim()) return;
 
     if (selectedChatType === "contact") {
       socket.emit("sendMessage", {
@@ -64,7 +63,6 @@ const MessageBar = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      console.log(e.key)
       e.preventDefault(); 
       handleSendMessage();
     }
