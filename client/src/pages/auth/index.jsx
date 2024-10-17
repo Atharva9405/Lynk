@@ -13,8 +13,8 @@ import { useAppStore } from "@/store";
 const Auth = () => {
   const navigate = useNavigate();
   const {setUserInfo} = useAppStore();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("alex@gmail.com");
+  const [password, setPassword] = useState("Alex@123");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const validateLogin = () => {
