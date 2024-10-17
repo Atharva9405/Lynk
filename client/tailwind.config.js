@@ -1,6 +1,5 @@
 import tailwindcssAnimate from "tailwindcss-animate";
-import plugin from 'tailwindcss/plugin';
-
+import plugin from "tailwindcss/plugin";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -66,6 +65,20 @@ export default {
           "scrollbar-width": "none",
           "&::-webkit-scrollbar": {
             display: "none",
+          },
+        },
+        ".scrollbar-custom": {
+          "&::-webkit-scrollbar": {
+            width: "12px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#8417ff50", 
+            borderRadius: "6px",
+            border: "3px solid transparent",
+            backgroundClip: "content-box",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
           },
         },
       });
